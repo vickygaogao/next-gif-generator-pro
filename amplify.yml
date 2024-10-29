@@ -16,7 +16,7 @@ frontend:
         - cp -r .next/static dist/
         - cp -r .next/server dist/
         - cp .next/*.json dist/
-        - cp .next/server.js dist/
+        # - cp .next/server.js dist/
         # 检查新目录大小
         - echo "Final build size:"
         - du -sh dist/*
