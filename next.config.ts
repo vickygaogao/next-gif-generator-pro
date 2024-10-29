@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: undefined,
   compress: true,
   images: {
     unoptimized: false,
@@ -9,7 +10,7 @@ const nextConfig: NextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
-  outputFileTracing: false
+  outputFileTracing: undefined,
 };
 
 export default nextConfig;

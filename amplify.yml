@@ -9,7 +9,10 @@ frontend:
       commands:
         - rm -rf .next
         - npm run build
+        - rm -rf .next/cache
+        - rm -rf .next/standalone
         - du -sh .next # 查看总大小
+        - ls -la .next/
         - du -h .next/* | sort -h # 查看每个文件的大小
         - npm list --depth=0 # 查看安装的依赖
   artifacts:
@@ -24,10 +27,9 @@ frontend:
       - package.json
     exclude:
       - cache/**/*
-      - '**/*.map'
       - server/pages/api/**
       - server/chunks/**
-      - '**/*.nft.json'
+      - standalone/**/* # 排除 standalone 目录
   cache:
     paths:
       - node_modules/**/*
