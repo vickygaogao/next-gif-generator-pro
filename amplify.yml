@@ -1,0 +1,29 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        - rm -rf .next/cache
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - static/**/*
+      - server/**/*.json
+      - build-manifest.json
+      - react-loadable-manifest.json
+      - routes-manifest.json
+      - required-server-files.json
+      - package.json
+    exclude:
+      - cache/**/*
+      - '**/*.map'
+      - server/pages/api/**
+      - server/chunks/**
+      - '**/*.nft.json'
+  cache:
+    paths:
+      - node_modules/**/*
