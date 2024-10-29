@@ -80,7 +80,7 @@ frontend:
         # 只复制必要的 .next 文件
         - cd .. && cp -r .next/server deploy/app/
         - cp -r .next/static deploy/app/
-        - cp .next/server.js deploy/app/
+        # - cp .next/server.js deploy/app/
         - cp .next/required-server-files.json deploy/app/
         - cp .next/routes-manifest.json deploy/app/
         - cp .next/build-manifest.json deploy/app/
