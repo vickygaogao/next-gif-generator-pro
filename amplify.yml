@@ -8,6 +8,9 @@ frontend:
       commands:
         - rm -rf .next
         - npm run build
+        - du -sh .next # 查看总大小
+        - du -h .next/* | sort -h # 查看每个文件的大小
+        - npm list --depth=0 # 查看安装的依赖
   artifacts:
     baseDirectory: .next
     files:
