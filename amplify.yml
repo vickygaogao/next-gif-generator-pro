@@ -3,10 +3,11 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
+        - rm -rf node_modules # 删除 node_modules
+        - npm install # 安装依赖
     build:
       commands:
-        - rm -rf .next node_modules
+        - rm -rf .next
         - npm run build
         - du -sh .next # 查看总大小
         - du -h .next/* | sort -h # 查看每个文件的大小
