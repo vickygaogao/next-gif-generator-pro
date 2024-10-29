@@ -1,7 +1,7 @@
 // app/api/generate-gif/route.ts
 import { NextResponse } from 'next/server';
-import GIFEncoder from 'gifencoder';
-import { createCanvas, loadImage } from 'canvas';
+// import GIFEncoder from 'gifencoder';
+// import { createCanvas, loadImage } from 'canvas';
 import path from 'path'
 
 // 定义允许的 HTTP 方法
@@ -19,7 +19,11 @@ export async function OPTIONS() {
 }
 
 export async function POST(request: Request) {
+  const GIFEncoder = (await import("gifencoder")).default;
+  const { createCanvas, loadImage } = await import("canvas");
+  
   console.log('API route hit');
+
   try {
     const { imageUrls } = await request.json();
     
