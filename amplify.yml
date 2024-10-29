@@ -6,7 +6,7 @@ frontend:
         - npm ci
     build:
       commands:
-        - rm -rf .next
+        - rm -rf .next node_modules
         - npm run build
         - du -sh .next # 查看总大小
         - du -h .next/* | sort -h # 查看每个文件的大小
