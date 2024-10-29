@@ -1,61 +1,99 @@
+# version: 1
+# frontend:
+#   phases:
+#     preBuild:
+#       commands:
+#         - rm -rf node_modules # 删除 node_modules
+#         - npm install # 安装依赖
+#     build:
+#       commands:
+#         - rm -rf .next
+#         - npm run build
+
+#         # 创建一个新的干净目录
+#         - mkdir -p dist
+#         # 只复制需要的文件
+#         - cp -r .next/static dist/
+#         - cp -r .next/server dist/
+#         - cp .next/*.json dist/
+#         # - cp .next/server.js dist/
+#         # 检查新目录大小
+#         - echo "Final build size:"
+#         - du -sh dist/*
+#         # 检查各个目录大小
+#         # - echo "Checking sizes:"
+#         # - du -sh ./*
+#         # - echo "Checking .next directory:"
+#         # - du -sh .next/*
+#         # - echo "Checking node_modules:"
+#         # - du -sh ./node_modules
+
+#         # - rm -rf .next/cache
+#         # - rm -rf .next/standalone
+#         # - du -sh .next # 查看总大小
+#         # - ls -la .next/
+#         # - du -h .next/* | sort -h # 查看每个文件的大小
+#         # - npm list --depth=0 # 查看安装的依赖
+
+#         # 再次检查大小
+#         # - echo "Size after cleanup:"
+#         # - du -sh .next/*
+#   artifacts:
+#     baseDirectory: dist
+#     files:
+#       # - server/**/*
+#       # - static/**/*
+#       # - dist/**/*
+#       # - build-manifest.json
+#       # - prerender-manifest.json
+#       # - routes-manifest.json
+#       # - webpack-runtime*.js
+#       # - server.js
+#       # - required-server-files.json
+#       - '**/*'
+#     # exclude:
+#     # - cache/**/*
+#     # - server/pages/api/**
+#     # - server/chunks/**
+#     # - standalone/**/* # 排除 standalone 目录
+#   # cache:
+#   #   paths:
+#   #     - node_modules/**/*
+
 version: 1
 frontend:
   phases:
     preBuild:
       commands:
-        - rm -rf node_modules # 删除 node_modules
-        - npm install # 安装依赖
+        - npm ci
     build:
       commands:
-        - rm -rf .next
         - npm run build
-
-        # 创建一个新的干净目录
-        - mkdir -p dist
-        # 只复制需要的文件
-        - cp -r .next/static dist/
-        - cp -r .next/server dist/
-        - cp .next/*.json dist/
-        # - cp .next/server.js dist/
-        # 检查新目录大小
-        - echo "Final build size:"
-        - du -sh dist/*
-        # 检查各个目录大小
-        # - echo "Checking sizes:"
-        # - du -sh ./*
-        # - echo "Checking .next directory:"
-        # - du -sh .next/*
-        # - echo "Checking node_modules:"
-        # - du -sh ./node_modules
-
-        # - rm -rf .next/cache
-        # - rm -rf .next/standalone
-        # - du -sh .next # 查看总大小
-        # - ls -la .next/
-        # - du -h .next/* | sort -h # 查看每个文件的大小
-        # - npm list --depth=0 # 查看安装的依赖
-
-        # 再次检查大小
-        # - echo "Size after cleanup:"
-        # - du -sh .next/*
+        # 创建部署目录
+        - mkdir -p deploy/app
+        # 只复制必要的运行时文件
+        - cp package.json deploy/
+        # 创建精简的 package.json
+        - node -e "const pkg=require('./package.json'); delete pkg.devDependencies; delete pkg.scripts; require('fs').writeFileSync('deploy/package.json', JSON.stringify(pkg))"
+        # 只安装生产依赖
+        - cd deploy && npm install --production
+        # 只复制必要的 .next 文件
+        - cd .. && cp -r .next/server deploy/app/
+        - cp -r .next/static deploy/app/
+        - cp .next/server.js deploy/app/
+        - cp .next/required-server-files.json deploy/app/
+        - cp .next/routes-manifest.json deploy/app/
+        - cp .next/build-manifest.json deploy/app/
+        # 删除不必要的文件
+        - cd deploy && find . -name "*.map" -delete
+        - find . -name "*.md" -delete
+        - find . -name "*.d.ts" -delete
+        - find . -type d -name "test" -exec rm -rf {} +
+        - find . -type d -name "docs" -exec rm -rf {} +
+        # 检查最终大小
+        - echo "Final deployment size:"
+        - du -sh deploy/*
   artifacts:
-    baseDirectory: dist
+    baseDirectory: deploy
     files:
-      # - server/**/*
-      # - static/**/*
-      # - dist/**/*
-      # - build-manifest.json
-      # - prerender-manifest.json
-      # - routes-manifest.json
-      # - webpack-runtime*.js
-      # - server.js
-      # - required-server-files.json
       - '**/*'
-    # exclude:
-    # - cache/**/*
-    # - server/pages/api/**
-    # - server/chunks/**
-    # - standalone/**/* # 排除 standalone 目录
-  # cache:
-  #   paths:
-  #     - node_modules/**/*
